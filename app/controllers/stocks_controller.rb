@@ -6,7 +6,7 @@ class StocksController < ApplicationController
 
   def create
     stock = Stock.find_by(name: params[:name])
-    stock.destroy if stock.present?
+    stock.destroy if stock.present? && stock.bearer_id != params[:bearer_id]
 
     new_stock = Stock.create!(stock_params)
     json_response(object: new_stock, message: 'Stock created successfully')

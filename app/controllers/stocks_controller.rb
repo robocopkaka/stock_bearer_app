@@ -24,13 +24,13 @@ class StocksController < ApplicationController
 
   def destroy
     @stock.update!(deleted_at: Time.current)
-    render json: { stock: @stock, message: 'Stock deleted successfully' }
+    json_response(object: @stock, message: 'Stock deleted successfully')
   end
 
   private
 
   def find_stock
-    @stock = Stock.find_by!(id: params[:id])
+    @stock = Stock.not_deleted.find_by!(id: params[:id])
   end
 
   def stock_params

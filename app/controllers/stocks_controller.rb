@@ -21,8 +21,8 @@ class StocksController < ApplicationController
   end
 
   def index
-    @stocks = Stock.not_deleted
-    json_response(object: @stocks)
+    @stocks = Stock.not_deleted.page
+    paginate @stocks, per_page: 10
   end
 
   def destroy
@@ -47,5 +47,13 @@ class StocksController < ApplicationController
     return unless params[:bearer_id]
 
     raise "You can't change the bearer when updating"
+  end
+
+  def pagination_meta(object)        {
+    current_page: object.current_page,
+    next_page: object.next_page,
+    prev_page: object.prev_page,
+    total_pages: object.total_pages,
+    total_count: object.total_count        }
   end
 end

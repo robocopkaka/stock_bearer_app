@@ -3,10 +3,13 @@
 # Stocks controller
 class StocksController < ApplicationController
   before_action :find_stock, only: %i[update destroy]
+  before_action :check_bearer_exists, only: %i[update]
 
   def create
-    stock = Stock.find_by(name: params[:name])
-    stock.destroy if stock.present? && stock.bearer_id != params[:bearer_id]
+    stock = Stock.not_deleted.find_by(name: params[:name])
+    if stock.present? && stock.bearer_id != params[:bearer_id].to_i
+      stock.update!(deleted_at: Time.current)
+    end
 
     new_stock = Stock.create!(stock_params)
     json_response(object: new_stock, message: 'Stock created successfully')
@@ -38,5 +41,11 @@ class StocksController < ApplicationController
       :name,
       :bearer_id
     )
+  end
+
+  def check_bearer_exists
+    return unless params[:bearer_id]
+
+    raise "You can't change the bearer when updating"
   end
 end

@@ -16,6 +16,9 @@ module Errors
         rescue_from ActiveRecord::RecordNotUnique do |e|
           respond(409, e.to_s)
         end
+        rescue_from RuntimeError do |e|
+          respond(400, e.to_s)
+        end
       end
     end
 

@@ -131,9 +131,8 @@ RSpec.describe 'Stocks spec', type: :request do
     context 'when a request to return all stock items is made' do
       before { get stocks_path }
       it 'returns stocks that haven\'t been deleted' do
-        returned_stocks = json['data']
-        expect(returned_stocks.count).to eq 2
-        expect(returned_stocks.pluck('deleted_at').uniq).to eq [nil]
+        expect(json.count).to eq 2
+        expect(json.pluck('deleted_at').uniq).to eq [nil]
       end
     end
 
@@ -143,9 +142,26 @@ RSpec.describe 'Stocks spec', type: :request do
         get stocks_path
       end
       it 'doesn\'t appear in the result' do
-        returned_stocks = json['data']
-        expect(returned_stocks.count).to eq 1
-        expect(returned_stocks.pluck('id')).to_not include stocks.first.id
+        expect(json.count).to eq 1
+        expect(json.pluck('id')).to_not include stocks.first.id
+      end
+    end
+    
+    context 'pagination' do
+      let!(:stocks_2) { create_list(:stock, 13) }
+      context 'when there are more than 10 stock items' do
+        before { get '/stocks?page=2' }
+        it 'moves some to a different page' do
+          expect(json.count).to eq 5
+        end
+      end
+      
+      context 'when the user enters an invalid page' do
+        before { get '/stocks?page=100' }
+        it 'returns an error' do
+          errors = json['errors'].first
+          expect(errors).to include 'Page not found'
+        end
       end
     end
   end

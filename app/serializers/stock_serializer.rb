@@ -2,7 +2,7 @@
 
 # Stock serializer
 class StockSerializer < ActiveModel::Serializer
-  attributes :id, :name
+  attributes :id, :name, :deleted_at
   
   belongs_to :bearer
 end

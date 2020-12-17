@@ -28,4 +28,5 @@
 * Update stock - `PATCH http://localhost:3000/stocks/:id`. Parameters - `{ name: string }`
 * Delete stock - `DELETE http://localhost:3000/stocks/:id`
 * Fetch all stocks - `GET http://localhost:3000/stocks`
+* Fetch paginated stocks - `GET http://localhost:3000/stocks?page=`
 

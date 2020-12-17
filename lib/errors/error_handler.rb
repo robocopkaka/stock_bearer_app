@@ -19,6 +19,9 @@ module Errors
         rescue_from RuntimeError do |e|
           respond(400, e.to_s)
         end
+        rescue_from Pagy::OverflowError do
+          respond(400, 'Page not found')
+        end
       end
     end
 

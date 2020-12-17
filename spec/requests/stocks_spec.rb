@@ -155,6 +155,14 @@ RSpec.describe 'Stocks spec', type: :request do
           expect(json.count).to eq 5
         end
       end
+      
+      context 'when the user enters an invalid page' do
+        before { get '/stocks?page=100' }
+        it 'returns an error' do
+          errors = json['errors'].first
+          expect(errors).to include 'Page not found'
+        end
+      end
     end
   end
 end
